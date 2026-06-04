@@ -19,9 +19,17 @@ AI Community: https://linux.do
 
 > **After the AI finishes reading this file, it must automatically execute the following configuration process and then report what was changed. The user does not need to operate manually.**
 
+> ⚠️ **FIRST-TIME SETUP:** `skills/tool-index.md` is gitignored and does NOT exist in the cloned repo until you generate it.  
+> **Before reading RULES.md**, you MUST first run:  
+> - Windows: `powershell -ExecutionPolicy Bypass -File skills/scripts/bootstrap-reverse.ps1 --list`  
+> - Linux/macOS: `bash skills/scripts/bootstrap-reverse.sh --list`  
+> - Kali: `bash kali/scripts/bootstrap-reverse.sh --list`  
+> This generates the tool index and verifies all capabilities. Without this step, RULES.md will fail to read tool-index.md and routing will be broken.
+
 ### Automatic Configuration Process
 
 ```text
+0. ⚠️ Run bootstrap first to generate skills/tool-index.md (see warning above)
 1. Detect the actual installation path of this package (derived from the location of this file, i.e., the directory containing README.md)
 2. Detect the local operating system and distribution:
    - Windows → continue with this README and the PowerShell script path
@@ -867,14 +875,22 @@ Each write-back must contain the following structure. The template file is at `f
 
 After writing a log, the AI should also check whether the following files need to be updated:
 
-| Check Item | Update Condition | Target File |
-|------------|------------------|-------------|
-| Routing matrix | A new scenario type or routing path was discovered | `routing.md` |
-| Tool index | A new tool was discovered or an existing tool path changed | Run `refresh-tool-index.ps1` |
-| Bootstrap manifest | A new auto-installable tool was discovered | `scripts/bootstrap-manifest.json` |
-| Sub-skill documentation | A workflow in a skill needs supplementation | Corresponding `SKILL.md` |
-| Anti-patterns / pitfalls | An easily repeated pitfall was found | Create or append `pitfalls.md` in the corresponding skill directory |
-| Experience index | Every time a new log is added | `field-journal/_index.md` |
+| Update Scope | What to update | How to write | Review required? |
+|---|---|---|---|
+| Experience log | New `field-journal/<date>_<name>.md` + `field-journal/_index.md` | Direct write ✅ | Auto-merged via `.github/workflows/auto-merge-journal.yml` |
+| Routing matrix | `routing.md` | **PR branch required** ⚠️ | ✅ Human or independent AI must review the diff before merge |
+| Bootstrap manifest | `scripts/bootstrap-manifest.json` | **PR branch required** ⚠️ | ✅ Human or independent AI must review the diff before merge |
+| Sub-skill documentation | Corresponding `SKILL.md` | **PR branch required** ⚠️ | ✅ Human or independent AI must review the diff before merge |
+| Tool index | Run `refresh-tool-index.ps1` | Direct write ✅ | Machine-generated, deterministic |
+| Anti-patterns / pitfalls | Create or append `pitfalls.md` | Direct write preferred, PR for shared directories | Direct if local-only; PR if in shared skill directory |
+
+> **Core rule:** Field-journal entries and tool-index refreshes can be written directly — they are machine-generated or have existing PR safeguards.  
+> **Routing.md, bootstrap-manifest.json, and SKILL.md changes MUST go through a PR workflow:**  
+> 1. `git checkout -b evolve/<timestamp>-<change-summary>`  
+> 2. Make the change and commit  
+> 3. If `gh` CLI is authenticated: `gh pr create --title "evolve: <summary>" --body "Evolution change from field-journal experience writeback"`  
+> 4. If `gh` is unavailable: commit locally and inform the user: *"Evolution change ready at branch evolve/... — please review and push."*  
+> This prevents silent corruption of routing logic, manifest integrity, or skill definitions by unverified AI edits.
 
 ### 15.5 Experience Index Maintenance
 

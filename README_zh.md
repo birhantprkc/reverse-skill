@@ -18,9 +18,17 @@ AI 社区：https://linux.do
 
 > **AI 读完本文件后，必须自动执行以下配置流程，完成后向用户报告改了什么。用户不需要手动操作。**
 
+> ⚠️ **首次使用须知：** `skills/tool-index.md` 已被 .gitignore 排除，clone 后不存在于仓库中，必须运行 bootstrap 生成。  
+> **读 RULES.md 之前**，必须先执行以下命令生成工具索引：  
+> - Windows：`powershell -ExecutionPolicy Bypass -File skills/scripts/bootstrap-reverse.ps1 --list`  
+> - Linux/macOS：`bash skills/scripts/bootstrap-reverse.sh --list`  
+> - Kali：`bash kali/scripts/bootstrap-reverse.sh --list`  
+> 不执行此步骤直接读 RULES.md 会因找不到 tool-index.md 而导致路由失败。
+
 ### 自动配置流程
 
 ```text
+0. ⚠️ 先运行 bootstrap 生成 skills/tool-index.md（详见上方警告）
 1. 检测本包实际安装路径（从本文件所在位置推导，即 README.md 所在目录）
 2. 自动检测本机系统与发行版：
    - Windows → 继续使用本 README + PowerShell 脚本链路
@@ -870,14 +878,22 @@ powershell -File "<你的 skill 根目录>\scripts\refresh-tool-index.ps1"
 
 回写日志后，AI 还应检查是否需要同步更新以下文件：
 
-| 检查项 | 更新条件 | 目标文件 |
-|--------|---------|---------|
-| 路由矩阵 | 发现了新的场景类型或路由路径 | `routing.md` |
-| 工具索引 | 发现了新工具或现有工具路径变化 | 执行 `refresh-tool-index.ps1` |
-| Bootstrap manifest | 发现了新的可自动安装的工具 | `scripts/bootstrap-manifest.json` |
-| 子 skill 文档 | 发现了某个 skill 的工作流需要补充 | 对应 `SKILL.md` |
-| 反模式/陷阱 | 发现了容易踩的坑 | 对应 skill 目录下新建或追加 `pitfalls.md` |
-| 经验索引 | 每次新增日志后 | `field-journal/_index.md` |
+| 更新范围 | 修改什么 | 写入方式 | 需要审核？ |
+|---------|---------|---------|-----------|
+| 经验日志 | 新 `field-journal/<日期>_<名称>.md` + `field-journal/_index.md` | 直接写入 ✅ | 自动合并（workflow 保护） |
+| 路由矩阵 | `routing.md` | **必须走 PR 分支** ⚠️ | ✅ 人工或独立 AI 审核 diff 后才能合并 |
+| Bootstrap manifest | `scripts/bootstrap-manifest.json` | **必须走 PR 分支** ⚠️ | ✅ 同上 |
+| 子 skill 文档 | 对应 `SKILL.md` | **必须走 PR 分支** ⚠️ | ✅ 同上 |
+| 工具索引 | 执行 `refresh-tool-index.ps1` 或 `.sh` | 直接写入 ✅ | 机器生成，确定性输出 |
+| 反模式/陷阱 | 对应 skill 下新建或追加 `pitfalls.md` | 可直接写入；共享目录走 PR | 本地个人用直接写，共享 skill 目录走 PR |
+
+> **核心原则：** field-journal 条目和 tool-index 刷新可以直接写入——它们有 workflow 保护或是机器生成的确定性输出。  
+> **routing.md、bootstrap-manifest.json、SKILL.md 的变更必须走 PR 流程：**  
+> 1. `git checkout -b evolve/<时间戳>-<变更摘要>`  
+> 2. 修改并 commit  
+> 3. 如果 `gh` CLI 已认证：`gh pr create --title "evolve: <摘要>" --body "进化变更来自 field-journal 经验回写"`  
+> 4. 如果 `gh` 不可用：本地 commit 后告知用户：*"进化变更已在 evolve/... 分支准备就绪，请审阅后 push。"*  
+> 这样可以防止路由逻辑、曼尼费斯特完整性或技能定义被未经审核的 AI 修改静默破坏。
 
 ### 15.5 经验索引自动维护
 
