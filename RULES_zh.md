@@ -290,7 +290,7 @@
 |------|------|------|---------|
 | idapro | 13337-13350 | IDA Pro 72 个逆向工具 | 自动启动（IDA 插件），多实例端口递增 |
 | anything-analyzer | 23816 | 浏览器自动化 + HTTP 捕获 | `pnpm dev`（项目目录） |
-| jshookmcp | — | JS Hook/CDP/Network/AST | `npx -y @jshookmcp/jshook@latest`（stdio） |
+| jshookmcp | — | JS Hook/CDP/Network/AST | `npx -y @jshookmcp/jshook@0.3.4`（stdio） |
 | ghidra | 8765 | Ghidra 免费反编译 | Ghidra GUI 启动后自动监听 |
 | burpsuite | 9876 | BurpSuite 63 工具全控制（Proxy/Intruder/Repeater/Scanner/Collaborator） | Burp 启动后扩展自动加载 |
 

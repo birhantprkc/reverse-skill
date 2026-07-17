@@ -13,7 +13,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Security
 
-- Added `docs/PACKAGE-SECURITY-AUDIT.md`: static audit of package executables (no backdoor / no auto DB wipe found; residual supply-chain notes for `@latest` and unsigned GitHub assets)
+- Added `docs/PACKAGE-SECURITY-AUDIT.md`: static audit of package executables (no backdoor / no auto DB wipe found)
+- Pin supply-chain floating tags: jshook `@0.3.4`, pentestswarm `v0.1.0`
+- Bootstrap integrity: GitHub zip/jar downloads verify `assetSha256` (manifest) or GitHub API `digest`; mismatch deletes file and fails
+- Pin jadx `v1.5.6` and apktool `v3.0.2` with published SHA256
 
 
 ### Added

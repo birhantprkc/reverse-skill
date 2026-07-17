@@ -11,9 +11,20 @@
 | **后门 / 主动删库 / 格式化磁盘** | **未发现** |
 | **管道下载执行（curl\|sh / IEX DownloadString）** | **未发现** |
 | **硬编码云密钥 / 私钥** | **未发现**（文档中的 `sk-` / `BEGIN RSA` 为检测示例） |
-| **供应链残余风险** | **有（中低）**：`@latest` / GitHub release **无哈希校验** |
+| **供应链残余风险** | **已部分加固（中低→低）**：钉死 `@latest`；GitHub 下载支持 **manifest SHA256 + API digest** |
 
 **总评：可执行 skill 脚本面当前未发现植入式后门或「一键删库」逻辑；危险删除均限定在工具重装临时目录 / case 输出目录。**
+
+### 2026-07-18 加固（本提交）
+
+| 项 | 动作 |
+|----|------|
+| jshookmcp | `@latest` → `@0.3.4` |
+| pentestswarm | `@latest` / docker `:latest` → `@v0.1.0` / `:v0.1.0` |
+| jadx | pin `v1.5.6` + `assetSha256` |
+| apktool | pin `v3.0.2` + `assetSha256` |
+| bootstrap PS/sh | 下载后 `Assert-DownloadedFileIntegrity` / `verify_sha256`；优先 manifest 哈希，其次 GitHub `digest`；失败删文件并中止 |
+| 未钉哈希的 release | 仍可安装，但 **WARN** 并打印实际 sha256 |
 
 ## 扫描方法
 
@@ -71,7 +82,7 @@
 
 | 项 | 风险 | 建议 |
 |----|------|------|
-| `bootstrap-manifest.json` 中 `@jshookmcp/jshook@latest`、`pentestswarm@latest` | 标签漂移 / 供应链投毒面 | 钉死版本号 + 校验和 |
+| `bootstrap-manifest.json` 中 `@jshookmcp/jshook@0.3.4`、`pentestswarm@v0.1.0` | 标签漂移 / 供应链投毒面 | 钉死版本号 + 校验和 |
 | GitHub release zip **无 SHA256 校验** | 被替换 release 时难以及时发现 | manifest 增加 `assetSha256` 并在 bootstrap 校验 |
 | `npm install -g` / `pip` 默认源 | 依赖生态固有风险 | 仅装 manifest 能力；生产环境用私有源/锁定 |
 

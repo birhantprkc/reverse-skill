@@ -311,7 +311,7 @@ This package only assumes that it eventually exposes an MCP endpoint such as: `h
   "mcpServers": {
     "jshook": {
       "command": "npx",
-      "args": ["-y", "@jshookmcp/jshook@latest"],
+      "args": ["-y", "@jshookmcp/jshook@0.3.4"],
       "env": { "JSHOOK_BASE_PROFILE": "search" }
     }
   }
@@ -354,7 +354,7 @@ Whether you use Claude Code, Codex CLI, Cursor, Cline, Windsurf, or another code
   "mcpServers": {
     "anything-analyzer": { "url": "http://localhost:23816/mcp" },
     "idapro": { "url": "http://127.0.0.1:13337/mcp" },
-    "jshook": { "command": "npx", "args": ["-y", "@jshookmcp/jshook@latest"], "env": { "JSHOOK_BASE_PROFILE": "search" } },
+    "jshook": { "command": "npx", "args": ["-y", "@jshookmcp/jshook@0.3.4"], "env": { "JSHOOK_BASE_PROFILE": "search" } },
     "burpsuite": { "command": "node", "args": ["<package root>/burp-mcp-full/mcp-bridge.js"] }
   }
 }
